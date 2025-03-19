@@ -1,0 +1,49 @@
+{
+  "name": "@agentic-profile/ai-provider",
+  "version": "0.2.0",
+  "description": "Provides adapters for the common AI providers such as Google/Gemini, OpenAI, and Groq",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepare": "tsup",
+    "build": "tsup",
+    "test": "jest"
+  },
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agentic-profile/agentic-profile-ai-provider.git"
+  },
+  "author": "Mike Prince",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/agentic-profile/agentic-profile-ai-provider/issues"
+  },
+  "homepage": "https://github.com/agentic-profile/agentic-profile-ai-provider#readme",
+  "dependencies": {
+    "@agentic-profile/common": "^0.2.0",
+    "@google-cloud/vertexai": "^1.9.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.9",
+    "@babel/preset-env": "^7.26.9",
+    "@babel/preset-typescript": "^7.26.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.9.2",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "regenerator-runtime": "^0.14.1",
+    "ts-jest": "^29.2.6",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.3.6",
+    "typescript": "^5.7.2"
+  }
+}
