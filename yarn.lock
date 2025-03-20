@@ -3,9 +3,9 @@
 
 
 "@agentic-profile/common@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@agentic-profile/common/-/common-0.2.0.tgz#cdbdf55577947b912a780dd778c8675aa5ade591"
-  integrity sha512-d2ws03/OG3ETysWR35EZOkm7vNfAPvp85U1C8321il5uVSP2YmT7jypjCStHq4GZjUic0nzMacB+eolPRcQ0Yg==
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@agentic-profile/common/-/common-0.2.3.tgz#b2f7a793f9c8a5902cc2387f25cb95d406c7dfd0"
+  integrity sha512-M2awxdzAAGVdxFQj69ZW2vrG/kd79rlOTEWE7zMwypMDtjXVcWXdc1WROVWMBBj+2yp6IS/mnS+6MDCn2jbHYQ==
   dependencies:
     axios "^1.7.9"
     did-resolver "^4.1.0"
