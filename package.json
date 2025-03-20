@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/agentic-profile/agentic-profile-ai-provider#readme",
   "dependencies": {
-    "@agentic-profile/common": "^0.2.0",
+    "@agentic-profile/common": "^0.2.3",
     "@google-cloud/vertexai": "^1.9.3"
   },
   "devDependencies": {
