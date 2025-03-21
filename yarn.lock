@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@agentic-profile/common@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@agentic-profile/common/-/common-0.2.3.tgz#b2f7a793f9c8a5902cc2387f25cb95d406c7dfd0"
-  integrity sha512-M2awxdzAAGVdxFQj69ZW2vrG/kd79rlOTEWE7zMwypMDtjXVcWXdc1WROVWMBBj+2yp6IS/mnS+6MDCn2jbHYQ==
+"@agentic-profile/common@^0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@agentic-profile/common/-/common-0.2.4.tgz#8ebb80ae33cad55f7dbdde9ec1b1f895258f0c73"
+  integrity sha512-D8Gc/eRjuAoi86h8sLyNlfxNfKppXPGNlRk3QfKvmIlME+luJMJ4gf87OTSKG9r98SMJI0rSLE5+H2UjIROQAA==
   dependencies:
     axios "^1.7.9"
     did-resolver "^4.1.0"
