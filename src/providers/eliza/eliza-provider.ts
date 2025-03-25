@@ -10,7 +10,19 @@ import {
     ChatCompletionParams
 } from "../../models.js";
 
-// Yes, global scope because there are many instances of this provider...
+import {
+    calculateInferenceCost,
+    TokenPricing
+} from "../../util.js"
+
+const PRICING = {
+    model: "eliza-1966",
+    inputCostPerMillion: 1.50,
+    outputCostPerMillion: 2.00
+} as TokenPricing;
+
+
+// Yes, global scope because there are many instances of this provider.  NOT CLOUD FRIENDLY.
 const sessions = new Map<DID,Eliza>();
 
 export default class ElizaProvider implements AIProvider {
@@ -50,7 +62,13 @@ export default class ElizaProvider implements AIProvider {
             created: new Date()
         };
 
-        return { reply, cost: 0.01 };
+        const usage = {
+            prompt_tokens: Math.round( (userText?.length ?? 0) / 3),
+            completion_tokens: Math.round(content.length / 3)
+        };
+        const cost = calculateInferenceCost({ tokenCounts: usage, pricing: PRICING });
+
+        return { reply, cost };
     }
 }
 

@@ -8,7 +8,11 @@ import {
     DID
 } from "@agentic-profile/common";
 
-import { asJSON } from "../util.js"
+import {
+    asJSON,
+    calculateInferenceCost,
+    TokenPricing
+} from "../util.js"
 import {
     AIProvider,
     ChatCompletionParams,
@@ -25,8 +29,13 @@ const vertexAI = new VertexAI({ project, location });
     PaLM API: Natural language tasks, text embeddings, and multiturn chat.
 */
 
-const TOKEN_COST = 0.0015 / 1000;   // $1.50/M
-const TOKEN_MARKUP = 10;    // ten times
+const PRICING: Record<string, TokenPricing> = {
+    "gemini-2.0-flash-lite": {
+        model: "gemini-2.0-flash-lite",
+        inputCostPerMillion: 0.075,
+        outputCostPerMillion: 0.30
+    }
+}
 
 interface MessagePart {
     text: string
@@ -42,7 +51,7 @@ export class VertexAIBridge implements AIProvider {
     private model: string;
 
     constructor( model?: string ) {
-        this.model = model || "gemini-1.5-pro";
+        this.model = model || "gemini-2.0-flash-lite";
         console.log( "Vertex AI using", this.model );
     }
 
@@ -99,7 +108,8 @@ export class VertexAIBridge implements AIProvider {
             totalTokenCount: total_tokens = 0
         } = response.usageMetadata || {};
         const usage = { prompt_tokens, completion_tokens, total_tokens };
-        const cost = usage ? total_tokens * TOKEN_COST * TOKEN_MARKUP : 0;
+
+        const cost = calculateInferenceCost({ tokenCounts: usage, pricing: PRICING[this.model] });
 
         const messageTail = params.contents.slice(-3);
         const messageCount = params.contents.length;
