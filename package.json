@@ -1,6 +1,6 @@
 {
   "name": "@agentic-profile/ai-provider",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "description": "Provides adapters for the common AI providers such as Google/Gemini, OpenAI, and Groq",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
