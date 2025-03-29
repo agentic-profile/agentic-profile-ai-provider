@@ -2,7 +2,6 @@ import {
     ChatMessage,
     DID
 } from "@agentic-profile/common";
-//import { loadEliza, Eliza } from 'eliza-core';
 import Eliza from "./elizabot.js";
 
 import {

@@ -1,26 +1,8 @@
-// source: https://github.com/oren/eliza-bot/blob/master/elizabot.js
+// sources:
+// - https://github.com/oren/eliza-bot/blob/master/elizabot.js
+// - https://github.com/brandongmwong/elizabot-js
+// - https://www.masswerk.at/elizabot/
 
-/*
-exports.reply = function (r) {
-	if (this.bot == null) {
-		this.bot = new ElizaBot(false);
-	} 
-	return this.bot.transform(r);
-}
-
-exports.start = function () {
-	if (this.bot == null) {
-		this.bot = new ElizaBot(false);
-	}
-	return this.bot.getInitial();
-}
-
-exports.bye = function () {
-	if (this.bot == null) {
-		this.bot = new ElizaBot(false);
-	}
-	return this.bot.getFinal();
-}*/
 
 export default function ElizaBot(noRandomFlag) {
 
