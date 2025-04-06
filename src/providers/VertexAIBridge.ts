@@ -5,7 +5,8 @@ import {
 } from "@google-cloud/vertexai";
 import {
     ChatMessage,
-    DID
+    DID,
+    prettyJson
 } from "@agentic-profile/common";
 
 import {
@@ -78,10 +79,10 @@ export class VertexAIBridge implements AIProvider {
         const params = await prepareParams( generativeModel, completionParams );
 
         // generate
-        console.log( "Genderating content for", JSON.stringify(params,null,4) );
+        console.log( "Genderating content for", prettyJson(params) );
         const { response } = await generativeModel.generateContent( params );
         if( !response.candidates || !response.candidates.length )
-            throw new Error( "No AI inference: " + JSON.stringify(response,null,4) );
+            throw new Error( "No AI inference: " + prettyJson(response) );
         const { finishReason, safetyRatings, content } = response.candidates[0];
         if( finishReason == "SAFETY" ) {
             const details = describeSafetyRatings( safetyRatings );
@@ -90,12 +91,12 @@ export class VertexAIBridge implements AIProvider {
 
         // make heads and tails from AI result...
         if( !content || !content.parts.length )
-            throw new Error( "No AI content: " + JSON.stringify(response,null,4) );
+            throw new Error( "No AI content: " + prettyJson(response) );
 
         const reply = cleanReply( content.parts[0].text );
         if( !reply ) {
             //console.log( "No content generated for", JSON.stringify(params,null,4) );
-            throw new Error( "No AI text content: " + JSON.stringify(response,null,4) );
+            throw new Error( "No AI text content: " + prettyJson(response) );
         }
 
         // any JSON?
@@ -119,7 +120,7 @@ export class VertexAIBridge implements AIProvider {
             JSON.stringify( messageTail, null, 4 ),
             "\n\n==== Instruction:", instruction,
             "\n\n==== Reply:", reply,
-            "\n\n==== JSON:", JSON.stringify( json, null, 4 ), 
+            "\n\n==== JSON:", prettyJson( json ), 
             { messageCount }
         );
 
@@ -254,7 +255,7 @@ function describeSafetyRatings( safetyRatings:any ) {
     if( !safetyRatings )
         return "Unknown";
 
-    console.log( "safety ratings", JSON.stringify(safetyRatings,null,4) );
+    console.log( "safety ratings", prettyJson(safetyRatings) );
 
     return safetyRatings.reduce((result:any,e:any)=>{
         if( e.blocked ) {
