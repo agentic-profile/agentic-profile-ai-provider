@@ -1,3 +1,5 @@
+import log from "loglevel";
+
 const JSON_PREFIX_SUFFIX_PAIRS = [
     ["```json", "```"],
     ["```", "```"],
@@ -37,7 +39,7 @@ export function asJSON( reply: string ) {
     try {
         return JSON.parse( json );
     } catch( err ) {
-        console.error( 'Failed to parse JSON', json );
+        log.warn( 'Failed to parse JSON', json );
         return null;
     }
 }
@@ -76,6 +78,6 @@ export function calculateInferenceCost({ tokenCounts, pricing = DEFAULT_PRICING 
     const roundedCost = Math.round( cost * 100000 ) / 100000;
 
     const billed = roundedCost * TOKEN_MARKUP;
-    console.log( 'calculateInferenceCost', tokenCounts, pricing, "base", roundedCost, "billed", billed, model ); 
+    log.info( 'calculateInferenceCost', tokenCounts, pricing, "base", roundedCost, "billed", billed, model ); 
     return billed;
 }

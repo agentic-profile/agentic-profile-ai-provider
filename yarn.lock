@@ -9,7 +9,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@agentic-profile/ai-provider@workspace:."
   dependencies:
-    "@agentic-profile/common": "npm:^0.4.5"
+    "@agentic-profile/common": "npm:^0.4.8"
     "@babel/core": "npm:^7.26.10"
     "@babel/preset-env": "npm:^7.26.9"
     "@babel/preset-typescript": "npm:^7.27.0"
@@ -26,12 +26,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@agentic-profile/common@npm:^0.4.5":
-  version: 0.4.5
-  resolution: "@agentic-profile/common@npm:0.4.5"
+"@agentic-profile/common@npm:^0.4.8":
+  version: 0.4.8
+  resolution: "@agentic-profile/common@npm:0.4.8"
   dependencies:
     did-resolver: "npm:^4.1.0"
-  checksum: 10c0/0c77bc1f5f9b47c270ff1de02392142e25cdd880d1c80880f05982c81fefbe4045e077ad6bf176c9914819050f81029cb68863a83884d2c9d68cac589352b0de
+    loglevel: "npm:^1.9.2"
+  checksum: 10c0/7e1abc24fdda60f198968e3dff3e46d62c5e8c545afa8666ce27165f37fec4f3958ee54ddff741c53e0bf1664c1a9c6084614cc41327fed9e332c75eeba7aca6
   languageName: node
   linkType: hard
 
@@ -4249,6 +4250,13 @@ __metadata:
   version: 4.7.0
   resolution: "lodash.sortby@npm:4.7.0"
   checksum: 10c0/fc48fb54ff7669f33bb32997cab9460757ee99fafaf72400b261c3e10fde21538e47d8cfcbe6a25a31bcb5b7b727c27d52626386fc2de24eb059a6d64a89cdf5
+  languageName: node
+  linkType: hard
+
+"loglevel@npm:^1.9.2":
+  version: 1.9.2
+  resolution: "loglevel@npm:1.9.2"
+  checksum: 10c0/1e317fa4648fe0b4a4cffef6de037340592cee8547b07d4ce97a487abe9153e704b98451100c799b032c72bb89c9366d71c9fb8192ada8703269263ae77acdc7
   languageName: node
   linkType: hard
 

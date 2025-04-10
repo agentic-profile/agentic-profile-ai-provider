@@ -3,6 +3,7 @@ import {
     DID
 } from "@agentic-profile/common";
 import Eliza from "./elizabot.js";
+import log from "loglevel";
 
 import {
     AIProvider,
@@ -29,7 +30,7 @@ export default class ElizaProvider implements AIProvider {
 
     constructor( model?: string ) {
         this.model = model || "eliza-1.2.0-beta.0";
-        console.log( "Eliza with", this.model );
+        log.info( "Eliza with", this.model );
     }
 
     get ai() {

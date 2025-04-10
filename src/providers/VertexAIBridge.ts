@@ -8,6 +8,7 @@ import {
     DID,
     prettyJson
 } from "@agentic-profile/common";
+import log from "loglevel";
 
 import {
     asJSON,
@@ -19,7 +20,6 @@ import {
     ChatCompletionParams,
     ChatCompletionResult,
 } from "../models.js";
-
 
 const project = process.env.VERTEX_PROJECT ?? "avatar-factory-ai";
 const location = process.env.VERTEX_LOCATION ?? "us-west1";
@@ -53,7 +53,7 @@ export class VertexAIBridge implements AIProvider {
 
     constructor( model?: string ) {
         this.model = model || "gemini-2.0-flash-lite";
-        console.log( "Vertex AI using", this.model );
+        log.info( "Vertex AI using", this.model );
     }
 
     get ai() {
@@ -79,7 +79,7 @@ export class VertexAIBridge implements AIProvider {
         const params = await prepareParams( generativeModel, completionParams );
 
         // generate
-        console.log( "Genderating content for", prettyJson(params) );
+        log.trace( "Generating content for", prettyJson(params) );
         const { response } = await generativeModel.generateContent( params );
         if( !response.candidates || !response.candidates.length )
             throw new Error( "No AI inference: " + prettyJson(response) );
@@ -115,7 +115,8 @@ export class VertexAIBridge implements AIProvider {
         const messageTail = params.contents.slice(-3);
         const messageCount = params.contents.length;
         const { agentDid, instruction } = completionParams;
-        console.log(
+
+        log.trace(
             `\n\n==== Vertex completion ${this.model} on messages:\n\n`,
             JSON.stringify( messageTail, null, 4 ),
             "\n\n==== Instruction:", instruction,
@@ -255,7 +256,7 @@ function describeSafetyRatings( safetyRatings:any ) {
     if( !safetyRatings )
         return "Unknown";
 
-    console.log( "safety ratings", prettyJson(safetyRatings) );
+    log.trace( "safety ratings", prettyJson(safetyRatings) );
 
     return safetyRatings.reduce((result:any,e:any)=>{
         if( e.blocked ) {
