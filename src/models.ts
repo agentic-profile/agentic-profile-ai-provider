@@ -10,8 +10,11 @@ export interface TokenCounts {
 }
 
 export interface MessageContext {
-    tail: any[],    // TODO use ChatMessage?
-    count: number
+    ai: string,
+    params?: any,
+    prompt?: string,
+    promptReason?: string,
+    response?: any
 }
 
 export interface ChatCompletionParams {
@@ -26,7 +29,7 @@ export interface ChatCompletionResult {
     json?: any,
     usage?: TokenCounts,
     cost?: number,
-    messageContext?: MessageContext
+    context?: MessageContext
 }
 
 export interface AIProvider {

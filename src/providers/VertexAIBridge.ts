@@ -43,10 +43,14 @@ interface MessagePart {
 }
 
 interface VertexMessage {
-    role: "user" | "model",
+    role: "user" | "model" | "developer",
     parts: MessagePart[]
 }
 
+interface InferenceParams {
+    contents: VertexMessage[]
+    systemInstruction?: VertexMessage  
+}
 
 export class VertexAIBridge implements AIProvider {
     private model: string;
@@ -79,7 +83,7 @@ export class VertexAIBridge implements AIProvider {
         const params = await prepareParams( generativeModel, completionParams );
 
         // generate
-        log.trace( "Generating content for", prettyJson(params) );
+        log.debug( "Generating content for", prettyJson(params) );
         const { response } = await generativeModel.generateContent( params );
         if( !response.candidates || !response.candidates.length )
             throw new Error( "No AI inference: " + prettyJson(response) );
@@ -116,7 +120,7 @@ export class VertexAIBridge implements AIProvider {
         const messageCount = params.contents.length;
         const { agentDid, instruction } = completionParams;
 
-        log.trace(
+        log.debug(
             `\n\n==== Vertex completion ${this.model} on messages:\n\n`,
             JSON.stringify( messageTail, null, 4 ),
             "\n\n==== Instruction:", instruction,
@@ -125,14 +129,29 @@ export class VertexAIBridge implements AIProvider {
             { messageCount }
         );
 
-        return { 
+        return {
             reply: { from: agentDid, content: reply, created: new Date() } as ChatMessage, 
             json, 
             usage, 
             cost, 
-            messageContext: { tail: messageTail, count: messageCount }
+            context: { 
+                ai: this.ai,
+                params,
+                prompt: asPrompt( params ),
+                response
+            }
         } as ChatCompletionResult;
     }
+}
+
+function asPrompt( params: InferenceParams ) {
+    let md = params.systemInstruction ? messageText( params.systemInstruction ) + '\n\n' : '';
+    md += params.contents.map(e=>`**${e.role}**: ${messageText(e)}`).join('\n\n');
+    return md;
+}
+
+function messageText( { parts }: VertexMessage ) {
+    return parts && parts.length > 0 ? parts[0].text : '';
 }
 
 function toMessage( role:string, content:string | Record<string, any> ) {
@@ -202,9 +221,10 @@ function getGenerativeModel( model: string ) {
 }
 
 async function prepareParams( generativeModel: any, { prompt, agentDid, messages, instruction }: ChatCompletionParams ) {
-    const params = {} as any;
-    const contents = convertMessages( messages, agentDid );
-    params.contents = contents;
+    const params = {
+        contents: convertMessages( messages, agentDid )
+    } as InferenceParams;
+    const { contents } = params;
 
     if( prompt ) {
         if( lastMessage( contents )?.role === "user" )
@@ -227,7 +247,7 @@ async function prepareParams( generativeModel: any, { prompt, agentDid, messages
             parts: [
                 { text: instruction }
             ]
-        };
+        } as VertexMessage;
         params.systemInstruction = systemInstruction;
 
         const { totalTokens: systemTokens } = await generativeModel.countTokens({ contents: [ systemInstruction ] });
@@ -256,7 +276,7 @@ function describeSafetyRatings( safetyRatings:any ) {
     if( !safetyRatings )
         return "Unknown";
 
-    log.trace( "safety ratings", prettyJson(safetyRatings) );
+    log.debug( "safety ratings", prettyJson(safetyRatings) );
 
     return safetyRatings.reduce((result:any,e:any)=>{
         if( e.blocked ) {
