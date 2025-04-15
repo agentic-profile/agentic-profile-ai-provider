@@ -26,7 +26,7 @@ export interface ChatCompletionParams {
 
 export interface ChatCompletionResult {
     reply: ChatMessage,
-    json?: any,
+    json?: any[],
     usage?: TokenCounts,
     cost?: number,
     context?: MessageContext

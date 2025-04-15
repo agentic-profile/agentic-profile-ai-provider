@@ -10,11 +10,11 @@ import {
 } from "@agentic-profile/common";
 import log from "loglevel";
 
+import { extractJson } from "../misc.js"
 import {
-    asJSON,
     calculateInferenceCost,
     TokenPricing
-} from "../util.js"
+} from "../cost.js"
 import {
     AIProvider,
     ChatCompletionParams,
@@ -97,14 +97,14 @@ export class VertexAIBridge implements AIProvider {
         if( !content || !content.parts.length )
             throw new Error( "No AI content: " + prettyJson(response) );
 
-        const reply = cleanReply( content.parts[0].text );
-        if( !reply ) {
+        const generatedText = cleanReply( content.parts[0].text );
+        if( !generatedText ) {
             //console.log( "No content generated for", JSON.stringify(params,null,4) );
             throw new Error( "No AI text content: " + prettyJson(response) );
         }
 
         // any JSON?
-        const json = asJSON( reply );
+        const { jsonObjects, textWithoutJson } = extractJson( generatedText );
                 
         const { totalTokens: completion_tokens } = await generativeModel.countTokens({ contents: [content] });
         const {
@@ -124,14 +124,14 @@ export class VertexAIBridge implements AIProvider {
             `\n\n==== Vertex completion ${this.model} on messages:\n\n`,
             JSON.stringify( messageTail, null, 4 ),
             "\n\n==== Instruction:", instruction,
-            "\n\n==== Reply:", reply,
-            "\n\n==== JSON:", prettyJson( json ), 
+            "\n\n==== Reply:", textWithoutJson,
+            "\n\n==== JSON:", prettyJson( jsonObjects ), 
             { messageCount }
         );
 
         return {
-            reply: { from: agentDid, content: reply, created: new Date() } as ChatMessage, 
-            json, 
+            reply: { from: agentDid, content: textWithoutJson, created: new Date() } as ChatMessage, 
+            json: jsonObjects, 
             usage, 
             cost, 
             context: { 

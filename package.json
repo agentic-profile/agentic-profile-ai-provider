@@ -1,6 +1,6 @@
 {
   "name": "@agentic-profile/ai-provider",
-  "version": "0.4.9",
+  "version": "0.4.10",
   "description": "Provides adapters for the common AI providers such as Google/Gemini, OpenAI, and Groq",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/agentic-profile/agentic-profile-ai-provider#readme",
   "dependencies": {
-    "@agentic-profile/common": "^0.4.8",
+    "@agentic-profile/common": "^0.4.10",
     "@google-cloud/vertexai": "^1.9.3"
   },
   "devDependencies": {

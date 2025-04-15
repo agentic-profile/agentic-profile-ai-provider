@@ -13,7 +13,7 @@ import {
 import {
     calculateInferenceCost,
     TokenPricing
-} from "../../util.js"
+} from "../../cost.js"
 
 const PRICING = {
     model: "eliza-1966",
