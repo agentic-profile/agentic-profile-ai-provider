@@ -19,6 +19,8 @@ import {
     AIProvider,
     ChatCompletionParams,
     ChatCompletionResult,
+    CompletionParams,
+    CompletionResult
 } from "../models.js";
 
 const project = process.env.VERTEX_PROJECT ?? "avatar-factory-ai";
@@ -52,7 +54,7 @@ interface InferenceParams {
     systemInstruction?: VertexMessage  
 }
 
-export class VertexAIBridge implements AIProvider {
+export default class VertexAIProvider implements AIProvider {
     private model: string;
 
     constructor( model?: string ) {
@@ -69,12 +71,17 @@ export class VertexAIBridge implements AIProvider {
         return "Gemini " + version;
     }
 
-    // prompt:  Last user message, telling AI what to do 
+    async completion({}: CompletionParams): Promise<CompletionResult> {
+        throw new Error("VertexAI completion is not supoported yet");
+    }
+
+    // prompt:  Optional prompt to insert as last message
+    // agentDid: required to know which messages came from agent
     // messages: [{ name:, role:, content: string }]
     //          order must always be user => model => user => model
     //          First must be user, last must be model
     // instruction:  system instruction, overall goals, etc.
-    async completion( completionParams: ChatCompletionParams ) {
+    async chatCompletion( completionParams: ChatCompletionParams ) {
         if( !vertexAI )
             throw new Error("Vertex did not start");
 
@@ -109,7 +116,6 @@ export class VertexAIBridge implements AIProvider {
         const { totalTokens: completion_tokens } = await generativeModel.countTokens({ contents: [content] });
         const {
             promptTokenCount: prompt_tokens = 0,
-            //candidateTokenCount: completion_tokens,
             totalTokenCount: total_tokens = 0
         } = response.usageMetadata || {};
         const usage = { prompt_tokens, completion_tokens, total_tokens };
@@ -131,20 +137,21 @@ export class VertexAIBridge implements AIProvider {
 
         return {
             reply: { from: agentDid, content: textWithoutJson, created: new Date() } as ChatMessage, 
-            json: jsonObjects, 
+            json: jsonObjects,
+            textWithoutJson,
             usage, 
             cost, 
             context: { 
-                ai: this.ai,
+                model: this.ai,
                 params,
-                prompt: asPrompt( params ),
+                promptMarkdown: promptToMarkdown( params ),
                 response
             }
         } as ChatCompletionResult;
     }
 }
 
-function asPrompt( params: InferenceParams ) {
+function promptToMarkdown( params: InferenceParams ) {
     let md = params.systemInstruction ? messageText( params.systemInstruction ) + '\n\n' : '';
     md += params.contents.map(e=>`**${e.role}**: ${messageText(e)}`).join('\n\n');
     return md;
@@ -233,7 +240,7 @@ async function prepareParams( generativeModel: any, { prompt, agentDid, messages
         contents.push( toMessage( "user", prompt ) );   
     }
 
-    if( contents[0].role === "model" )
+    if( contents.length > 0 && contents[0].role === "model" )
         contents.unshift( toMessage("user","Hello") );  // First message must be from user
 
     // last message must always be from user

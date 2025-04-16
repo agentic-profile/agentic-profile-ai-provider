@@ -7,7 +7,9 @@ import log from "loglevel";
 
 import {
     AIProvider,
-    ChatCompletionParams
+    ChatCompletionParams,
+    ChatCompletionResult,
+    CompletionResult
 } from "../../models.js";
 
 import {
@@ -42,7 +44,7 @@ export default class ElizaProvider implements AIProvider {
         return "Eliza " + version;
     }
 
-    async completion( { agentDid, messages }: ChatCompletionParams ) {
+    async chatCompletion( { agentDid, messages }: ChatCompletionParams ) {
         let eliza = sessions.get( agentDid );
         if( !eliza ) {
             eliza = new Eliza();
@@ -68,7 +70,22 @@ export default class ElizaProvider implements AIProvider {
         };
         const cost = calculateInferenceCost({ tokenCounts: usage, pricing: PRICING });
 
-        return { reply, cost };
+        return {
+            reply, 
+            json: [],
+            textWithoutJson: content,
+            cost,
+            context: {
+                model: this.ai,
+                params: { userText },
+                response: {},
+                promptMarkdown: "TBD"
+            }
+        } as ChatCompletionResult;
+    }
+
+    async completion(): Promise<CompletionResult> {
+        throw new Error("Eliza completion not supported");
     }
 }
 

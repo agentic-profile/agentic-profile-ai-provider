@@ -10,7 +10,7 @@ describe("Eliza", () => {
             agentDid,
             messages: []
         }
-        const { reply } = await eliza.completion( params );
+        const { reply } = await eliza.chatCompletion( params );
         console.log( 'Eliza says', reply.content );
         expect( typeof reply.content ).toBe( "string" );
     });
@@ -27,7 +27,7 @@ describe("Eliza", () => {
                 }
             ]
         }
-        const { reply } = await eliza.completion( params );
+        const { reply } = await eliza.chatCompletion( params );
         console.log( 'Eliza says', reply.content );
         expect( typeof reply.content ).toBe( "string" );
     });
