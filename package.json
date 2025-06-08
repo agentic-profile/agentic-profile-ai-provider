@@ -1,6 +1,6 @@
 {
   "name": "@agentic-profile/ai-provider",
-  "version": "0.4.11",
+  "version": "0.6.0",
   "description": "Provides adapters for the common AI providers such as Google/Gemini, OpenAI, and Groq",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,14 +23,15 @@
     "url": "git+https://github.com/agentic-profile/agentic-profile-ai-provider.git"
   },
   "author": "Mike Prince",
-  "license": "MIT",
+  "license": "Apache-2",
   "bugs": {
     "url": "https://github.com/agentic-profile/agentic-profile-ai-provider/issues"
   },
   "homepage": "https://github.com/agentic-profile/agentic-profile-ai-provider#readme",
   "dependencies": {
-    "@agentic-profile/common": "^0.4.10",
+    "@agentic-profile/common": "^0.6.0",
     "@google-cloud/vertexai": "^1.9.3",
+    "loglevel": "^1.9.2",
     "openai": "^4.94.0"
   },
   "devDependencies": {
@@ -47,5 +48,5 @@
     "tsup": "^8.4.0",
     "typescript": "^5.8.3"
   },
-  "packageManager": "yarn@4.8.1"
+  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
 }

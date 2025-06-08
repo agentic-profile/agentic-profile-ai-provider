@@ -4,10 +4,13 @@ import {
     VertexAI
 } from "@google-cloud/vertexai";
 import {
-    ChatMessage,
-    DID,
+    createTimer,
     prettyJson
 } from "@agentic-profile/common";
+import {
+    AgentMessage,
+    DID,
+} from "@agentic-profile/common/schema";
 import log from "loglevel";
 
 import { extractJson } from "../misc.js"
@@ -26,6 +29,8 @@ import {
 const project = process.env.VERTEX_PROJECT ?? "avatar-factory-ai";
 const location = process.env.VERTEX_LOCATION ?? "us-west1";
 const vertexAI = new VertexAI({ project, location });
+
+const debug = (process.env.DEBUG_FILTER ?? "").split(',').includes("vertex");
 
 /*
     Gemini API: Advanced reasoning, multiturn chat, code generation, and multimodal prompts.
@@ -85,12 +90,15 @@ export default class VertexAIProvider implements AIProvider {
         if( !vertexAI )
             throw new Error("Vertex did not start");
 
+        const { elapsed } = createTimer( "vertex.chatCompletion" );
+
         // prepare
         const generativeModel = getGenerativeModel( this.model ); 
         const params = await prepareParams( generativeModel, completionParams );
 
         // generate
-        log.debug( "Generating content for", prettyJson(params) );
+        if( debug )
+            log.debug( "Generating content for", prettyJson(params) );
         const { response } = await generativeModel.generateContent( params );
         if( !response.candidates || !response.candidates.length )
             throw new Error( "No AI inference: " + prettyJson(response) );
@@ -126,7 +134,7 @@ export default class VertexAIProvider implements AIProvider {
         const messageCount = params.contents.length;
         const { agentDid, instruction } = completionParams;
 
-        log.debug(
+        if( debug ) log.debug(
             `\n\n==== Vertex completion ${this.model} on messages:\n\n`,
             JSON.stringify( messageTail, null, 4 ),
             "\n\n==== Instruction:", instruction,
@@ -135,8 +143,10 @@ export default class VertexAIProvider implements AIProvider {
             { messageCount }
         );
 
+        elapsed( "completed" );
+
         return {
-            reply: { from: agentDid, content: textWithoutJson, created: new Date() } as ChatMessage, 
+            reply: { from: agentDid, content: textWithoutJson, created: new Date() } as AgentMessage, 
             json: jsonObjects,
             textWithoutJson,
             usage, 
@@ -166,13 +176,13 @@ function toMessage( role:string, content:string | Record<string, any> ) {
     return { role, parts:[{ text }] } as VertexMessage;    
 }
 
-function isAgentMessage( message: ChatMessage, agentDid: DID ) {
+function isAgentMessage( message: AgentMessage, agentDid: DID ) {
     return message.from === agentDid;
 }
 
 // { role: "user"|"assistant"|"system", name:, content: string }
 // => { role: "user"|"model", parts:[{text}] }
-function convertMessages( messages: ChatMessage[], agentDid: DID ) {
+function convertMessages( messages: AgentMessage[], agentDid: DID ) {
     if( !messages )
         return [];
     const vMessages = messages.map(m=>{
@@ -283,7 +293,8 @@ function describeSafetyRatings( safetyRatings:any ) {
     if( !safetyRatings )
         return "Unknown";
 
-    log.debug( "safety ratings", prettyJson(safetyRatings) );
+    if( debug )
+        log.debug( "safety ratings", prettyJson(safetyRatings) );
 
     return safetyRatings.reduce((result:any,e:any)=>{
         if( e.blocked ) {

@@ -2,9 +2,11 @@ import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions.mjs";
 import log from "loglevel";
 import {
-    ChatMessage,
     prettyJson
 } from "@agentic-profile/common";
+import {
+    AgentMessage,
+} from "@agentic-profile/common/schema";
 
 import { extractJson } from "../misc.js";
 import {
@@ -128,7 +130,7 @@ export default class OpenAIProvider implements AIProvider {
         );
 
         return {
-            reply: { from: agentDid, content: textWithoutJson, created: new Date() } as ChatMessage, 
+            reply: { from: agentDid, content: textWithoutJson, created: new Date() } as AgentMessage, 
             json: jsonObjects,
             textWithoutJson,
             usage,

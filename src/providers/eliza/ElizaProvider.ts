@@ -1,7 +1,7 @@
 import {
-    ChatMessage,
+    AgentMessage,
     DID
-} from "@agentic-profile/common";
+} from "@agentic-profile/common/schema";
 import Eliza from "./elizabot.js";
 import log from "loglevel";
 
@@ -89,7 +89,7 @@ export default class ElizaProvider implements AIProvider {
     }
 }
 
-function lastPeerMessageText( agentDid: DID, messages: ChatMessage[] ): string | undefined {
+function lastPeerMessageText( agentDid: DID, messages: AgentMessage[] ): string | undefined {
     const { content } = messages.reverse().find(e=>e.from !== agentDid) ?? {};
     return typeof content === 'string' ? content : undefined;
 }

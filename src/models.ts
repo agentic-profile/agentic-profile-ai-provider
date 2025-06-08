@@ -1,7 +1,7 @@
 import {
-    ChatMessage,
+    AgentMessage,
     DID
-} from "@agentic-profile/common";
+} from "@agentic-profile/common/schema";
 
 export interface TokenCounts {
     prompt_tokens: number,
@@ -40,7 +40,7 @@ export interface CompletionResult {
 export interface ChatCompletionParams {
     prompt?: string,
     agentDid: DID,
-    messages: ChatMessage[],
+    messages: AgentMessage[],
     instruction?: string   
 }
 
@@ -54,7 +54,7 @@ export interface ChatCompletionContext {
 
 // OUT
 export interface ChatCompletionResult {
-    reply: ChatMessage,
+    reply: AgentMessage,
     json: any[],
     textWithoutJson: string,
     usage?: TokenCounts,
